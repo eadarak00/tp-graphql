@@ -24,7 +24,7 @@ public class PersonneController {
     public List<PersonneSummaryDTO> listerToutesPersonnes() {
         return service.getAll()
                 .stream()
-                .map(p -> new PersonneSummaryDTO(p.getNom(), p.getPrenom(), p.getTelephone(), p.getAdresse()))
+                .map(p -> new PersonneSummaryDTO(p.getId(),p.getNom(), p.getPrenom(), p.getTelephone(), p.getAdresse()))
                 .collect(Collectors.toList());
     }
 
@@ -52,6 +52,7 @@ public class PersonneController {
    @MutationMapping
 public Personne modifierPersonne(@Argument Long id, @Argument PersonneInputDTO personne) {
     Personne p = new Personne();
+    p.setId(id);
     p.setNom(personne.getNom());
     p.setPrenom(personne.getPrenom());
     p.setAdresse(personne.getAdresse());

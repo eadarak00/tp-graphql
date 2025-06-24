@@ -4,10 +4,12 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
+
 @Getter
 @Setter
 @AllArgsConstructor
 public class PersonneSummaryDTO {
+    private Long id;
     private String nom;
     private String prenom;
     private String telephone;

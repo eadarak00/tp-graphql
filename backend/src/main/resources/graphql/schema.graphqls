@@ -10,6 +10,7 @@ type Personne {
 }
 
 type PersonneSummary {
+  id: ID
   nom: String!
   prenom: String!
   telephone: String!

@@ -12,6 +12,37 @@
                 </button>
             </div>
 
+            <!-- Section de recherche par ID -->
+            <!-- <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-search me-2"></i>
+                        Rechercher et modifier une personne
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="row align-items-end">
+                        <div class="col-md-8">
+                            <label for="searchId" class="form-label">ID de la personne</label>
+                            <input type="text" class="form-control" id="searchId" [(ngModel)]="searchId"
+                                placeholder="Saisissez l'ID de la personne à modifier" [disabled]="loadingPersonne">
+                        </div>
+                        <div class="col-md-4">
+                            <button class="btn btn-outline-primary w-100" (click)="rechercherEtModifier()"
+                                [disabled]="loadingPersonne || !searchId.trim()">
+                                <span *ngIf="loadingPersonne" class="spinner-border spinner-border-sm me-2"></span>
+                                <i *ngIf="!loadingPersonne" class="fas fa-search me-2"></i>
+                                {{ loadingPersonne ? 'Recherche...' : 'Rechercher et modifier' }}
+                            </button>
+                        </div>
+                    </div>
+                    <div *ngIf="searchError" class="alert alert-warning mt-3 mb-0">
+                        <i class="fas fa-exclamation-triangle me-2"></i>
+                        {{ searchError }}
+                    </div>
+                </div>
+            </div> -->
+
             <!-- Loading -->
             <div *ngIf="loading" class="text-center py-5">
                 <div class="spinner-border text-primary" role="status">
@@ -46,17 +77,33 @@
                         <div class="card h-100 shadow-sm">
                             <div class="card-body">
                                 <div class="d-flex justify-content-between align-items-start mb-3">
-                                    <h5 class="card-title mb-0">
-                                        <i class="fas fa-user me-2 text-primary"></i>
-                                        {{ personne.prenom }} {{ personne.nom }}
-                                    </h5>
-                                    <button class="btn btn-outline-danger btn-sm" (click)="supprimerPersonne(personne)"
-                                        title="Supprimer">
-                                        <i class="fas fa-trash"></i>
-                                    </button>
+                                    <div>
+                                        <h5 class="card-title mb-1">
+                                            <i class="fas fa-user me-2 text-primary"></i>
+                                            {{ personne.prenom }} {{ personne.nom }}
+                                        </h5>
+                                        <small class="text-muted">ID: {{ personne.id }}</small>
+                                    </div>
+                                    <div class="btn-group">
+                                        <button class="btn btn-outline-primary btn-sm"
+                                            (click)="ouvrirModalModification(personne)" title="Modifier">
+                                            <i class="fas fa-edit"></i>
+                                        </button>
+                                        <button class="btn btn-outline-danger btn-sm"
+                                            (click)="supprimerPersonne(personne)" title="Supprimer">
+                                            <i class="fas fa-trash"></i>
+                                        </button>
+                                    </div>
                                 </div>
 
                                 <div class="card-text">
+                                    <small class="text-muted d-block mb-2" *ngIf="personne.dateNaissance">
+                                        <i class="fas fa-birthday-cake me-2"></i>
+                                        <strong>Née le:</strong> {{ formaterDate(personne.dateNaissance) }}
+                                        <span *ngIf="calculerAge(personne.dateNaissance) !== null">
+                                            ({{ calculerAge(personne.dateNaissance) }} ans)
+                                        </span>
+                                    </small>
 
                                     <small class="text-muted d-block mb-2" *ngIf="personne.adresse">
                                         <i class="fas fa-map-marker-alt me-2"></i>
@@ -76,3 +123,97 @@
         </div>
     </div>
 </div>
+
+<!-- Modal de modification -->
+<div class="modal fade" [class.show]="showModal" [style.display]="showModal ? 'block' : 'none'" tabindex="-1"
+    role="dialog" *ngIf="showModal">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-edit me-2"></i>
+                    Modifier la personne
+                </h5>
+                <button type="button" class="btn-close" (click)="fermerModal()" [disabled]="submitting"></button>
+            </div>
+
+            <div class="modal-body">
+                <div *ngIf="personneAModifier" class="alert alert-info mb-4">
+                    <i class="fas fa-info-circle me-2"></i>
+                    <strong>Modification de:</strong> {{ personneAModifier.prenom }} {{ personneAModifier.nom }}
+                    <br>
+                    <small><strong>ID:</strong> {{ personneAModifier.id }}</small>
+                </div>
+
+                <form (ngSubmit)="modifierPersonne()" #modifierForm="ngForm">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label for="prenom" class="form-label">
+                                <i class="fas fa-user me-1"></i>
+                                Prénom *
+                            </label>
+                            <input type="text" class="form-control" id="prenom" [(ngModel)]="formData.prenom"
+                                name="prenom" required [disabled]="submitting" placeholder="Entrez le prénom">
+                        </div>
+
+                        <div class="col-md-6 mb-3">
+                            <label for="nom" class="form-label">
+                                <i class="fas fa-user me-1"></i>
+                                Nom *
+                            </label>
+                            <input type="text" class="form-control" id="nom" [(ngModel)]="formData.nom" name="nom"
+                                required [disabled]="submitting" placeholder="Entrez le nom">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="dateNaissance" class="form-label">
+                            <i class="fas fa-birthday-cake me-1"></i>
+                            Date de naissance
+                        </label>
+                        <input type="date" class="form-control" id="dateNaissance" [(ngModel)]="formData.dateNaissance"
+                            name="dateNaissance" [disabled]="submitting" [max]="getMaxDate()">
+                        <div class="form-text">
+                            <small *ngIf="formData.dateNaissance && calculerAge(formData.dateNaissance) !== null">
+                                Âge: {{ calculerAge(formData.dateNaissance) }} ans
+                            </small>
+                        </div>
+                    </div>
+                    <div class="mb-3">
+                        <label for="adresse" class="form-label">
+                            <i class="fas fa-map-marker-alt me-1"></i>
+                            Adresse
+                        </label>
+                        <textarea class="form-control" id="adresse" [(ngModel)]="formData.adresse" name="adresse"
+                            [disabled]="submitting" rows="2" placeholder="Entrez l'adresse complète"></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="telephone" class="form-label">
+                            <i class="fas fa-phone me-1"></i>
+                            Téléphone
+                        </label>
+                        <input type="tel" class="form-control" id="telephone" [(ngModel)]="formData.telephone"
+                            name="telephone" [disabled]="submitting" placeholder="Entrez le numéro de téléphone">
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" (click)="fermerModal()" [disabled]="submitting">
+                    <i class="fas fa-times me-2"></i>
+                    Annuler
+                </button>
+                <button type="button" class="btn btn-primary" (click)="modifierPersonne()"
+                    [disabled]="submitting || !formData.prenom?.trim() || !formData.nom?.trim()">
+                    <span *ngIf="submitting" class="spinner-border spinner-border-sm me-2"></span>
+                    <i *ngIf="!submitting" class="fas fa-save me-2"></i>
+                    {{ submitting ? 'Modification...' : 'Modifier' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Backdrop du modal -->
+<div class="modal-backdrop fade" [class.show]="showModal" *ngIf="showModal" (click)="fermerModal()"></div>

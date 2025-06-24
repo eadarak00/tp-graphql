@@ -4,6 +4,7 @@ export interface Personne {
   prenom: string;
   adresse?: string;
   telephone?: string;
+  dateNaissance?: string;
 }
 
 export interface PersonneInput {

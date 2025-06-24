@@ -1,33 +1,21 @@
-
-// src/app/graphql/graphql.module.ts
+// graphql.module.ts
 import { NgModule } from '@angular/core';
-import { APOLLO_OPTIONS } from 'apollo-angular';
-import { ApolloClientOptions, InMemoryCache } from '@apollo/client/core';
+import { provideApollo } from 'apollo-angular';
 import { HttpLink } from 'apollo-angular/http';
-import { HttpClientModule } from '@angular/common/http';
+import { ApolloClientOptions, InMemoryCache } from '@apollo/client/core';
+import { inject } from '@angular/core';
 
-const uri = 'http://localhost:8080/graphql';
+export function createApollo(): ApolloClientOptions<any> {
+  const uri = 'http://localhost:8080/graphql';
+  const httpLink = inject(HttpLink);
 
-export function createApollo(httpLink: HttpLink): ApolloClientOptions<any> {
   return {
     link: httpLink.create({ uri }),
     cache: new InMemoryCache(),
-    defaultOptions: {
-      watchQuery: {
-        errorPolicy: 'all'
-      }
-    }
   };
 }
 
 @NgModule({
-  imports: [HttpClientModule],
-  providers: [
-    {
-      provide: APOLLO_OPTIONS,
-      useFactory: createApollo,
-      deps: [HttpLink],
-    },
-  ],
+  providers: [provideApollo(createApollo)],
 })
 export class GraphQLModule {}

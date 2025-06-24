@@ -1,0 +1,27 @@
+.form-control:focus {
+  border-color: #0d6efd;
+  box-shadow: 0 0 0 0.2rem rgba(13, 110, 253, 0.25);
+}
+
+.btn-primary {
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+.btn-primary:hover {
+  background-color: #0b5ed7;
+  border-color: #0a58ca;
+}
+
+.text-danger {
+  color: #dc3545 !important;
+}
+
+.card {
+  border: none;
+  border-radius: 10px;
+}
+
+.gap-2 {
+  gap: 0.5rem;
+}

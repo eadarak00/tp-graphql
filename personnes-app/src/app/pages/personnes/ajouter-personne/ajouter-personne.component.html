@@ -1,0 +1,127 @@
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+      <div class="d-flex align-items-center mb-4">
+        <button 
+          class="btn btn-outline-secondary me-3"
+          (click)="retourListe()"
+          title="Retour à la liste">
+          <i class="fas fa-arrow-left"></i>
+        </button>
+        <h1 class="h2 mb-0">
+          <i class="fas fa-user-plus me-2"></i>
+          Ajouter une Personne
+        </h1>
+      </div>
+
+      <div class="card shadow">
+        <div class="card-body">
+          <form [formGroup]="personneForm" (ngSubmit)="onSubmit()">
+            <!-- Error Alert -->
+            <div *ngIf="error" class="alert alert-danger">
+              <i class="fas fa-exclamation-triangle me-2"></i>
+              {{ error }}
+            </div>
+
+            <div class="row">
+              <!-- Nom -->
+              <div class="col-md-6 mb-3">
+                <label for="nom" class="form-label">
+                  Nom <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="nom"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('nom')"
+                  formControlName="nom"
+                  placeholder="Entrez le nom">
+                <div class="invalid-feedback">
+                  {{ getFieldError('nom') }}
+                </div>
+              </div>
+
+              <!-- Prénom -->
+              <div class="col-md-6 mb-3">
+                <label for="prenom" class="form-label">
+                  Prénom <span class="text-danger">*</span>
+                </label>
+                <input
+                  type="text"
+                  id="prenom"
+                  class="form-control"
+                  [class.is-invalid]="isFieldInvalid('prenom')"
+                  formControlName="prenom"
+                  placeholder="Entrez le prénom">
+                <div class="invalid-feedback">
+                  {{ getFieldError('prenom') }}
+                </div>
+              </div>
+            </div>
+
+            <!-- Date de naissance -->
+            <div class="mb-3">
+              <label for="dateNaissance" class="form-label">
+                Date de naissance
+              </label>
+              <input
+                type="date"
+                id="dateNaissance"
+                class="form-control"
+                formControlName="dateNaissance">
+            </div>
+
+            <!-- Adresse -->
+            <div class="mb-3">
+              <label for="adresse" class="form-label">
+                Adresse
+              </label>
+              <textarea
+                id="adresse"
+                class="form-control"
+                rows="3"
+                formControlName="adresse"
+                placeholder="Entrez l'adresse complète"></textarea>
+            </div>
+
+            <!-- Téléphone -->
+            <div class="mb-4">
+              <label for="telephone" class="form-label">
+                Téléphone
+              </label>
+              <input
+                type="tel"
+                id="telephone"
+                class="form-control"
+                [class.is-invalid]="isFieldInvalid('telephone')"
+                formControlName="telephone"
+                placeholder="Entrez le numéro de téléphone">
+              <div class="invalid-feedback">
+                {{ getFieldError('telephone') }}
+              </div>
+            </div>
+
+            <!-- Boutons -->
+            <div class="d-flex gap-2">
+              <button
+                type="submit"
+                class="btn btn-primary flex-fill"
+                [disabled]="loading">
+                <span *ngIf="loading" class="spinner-border spinner-border-sm me-2"></span>
+                <i *ngIf="!loading" class="fas fa-plus me-2"></i>
+                {{ loading ? 'Ajout en cours...' : 'Ajouter la personne' }}
+              </button>
+              <button
+                type="button"
+                class="btn btn-outline-secondary"
+                (click)="retourListe()"
+                [disabled]="loading">
+                Annuler
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

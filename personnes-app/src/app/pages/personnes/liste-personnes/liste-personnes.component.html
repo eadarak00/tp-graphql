@@ -1,0 +1,78 @@
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h1 class="h2">
+                    <i class="fas fa-users me-2"></i>
+                    Liste des Personnes
+                </h1>
+                <button class="btn btn-primary" (click)="naviguerVersAjouter()">
+                    <i class="fas fa-plus me-2"></i>
+                    Ajouter une personne
+                </button>
+            </div>
+
+            <!-- Loading -->
+            <div *ngIf="loading" class="text-center py-5">
+                <div class="spinner-border text-primary" role="status">
+                    <span class="visually-hidden">Chargement...</span>
+                </div>
+                <p class="mt-2">Chargement des personnes...</p>
+            </div>
+
+            <!-- Error -->
+            <div *ngIf="error" class="alert alert-danger">
+                <i class="fas fa-exclamation-triangle me-2"></i>
+                {{ error }}
+                <button class="btn btn-outline-danger btn-sm ms-2" (click)="chargerPersonnes()">
+                    Réessayer
+                </button>
+            </div>
+
+            <!-- Liste des personnes -->
+            <div *ngIf="!loading && !error">
+                <div *ngIf="(personnes$ | async)?.length === 0" class="text-center py-5">
+                    <i class="fas fa-user-slash fa-3x text-muted mb-3"></i>
+                    <h3>Aucune personne trouvée</h3>
+                    <p class="text-muted">Commencez par ajouter votre première personne.</p>
+                    <button class="btn btn-primary" (click)="naviguerVersAjouter()">
+                        <i class="fas fa-plus me-2"></i>
+                        Ajouter une personne
+                    </button>
+                </div>
+
+                <div class="row" *ngIf="(personnes$ | async)?.length! > 0">
+                    <div class="col-lg-4 col-md-6 mb-4" *ngFor="let personne of personnes$ | async;">
+                        <div class="card h-100 shadow-sm">
+                            <div class="card-body">
+                                <div class="d-flex justify-content-between align-items-start mb-3">
+                                    <h5 class="card-title mb-0">
+                                        <i class="fas fa-user me-2 text-primary"></i>
+                                        {{ personne.prenom }} {{ personne.nom }}
+                                    </h5>
+                                    <button class="btn btn-outline-danger btn-sm" (click)="supprimerPersonne(personne)"
+                                        title="Supprimer">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+
+                                <div class="card-text">
+
+                                    <small class="text-muted d-block mb-2" *ngIf="personne.adresse">
+                                        <i class="fas fa-map-marker-alt me-2"></i>
+                                        <strong>Adresse:</strong> {{ personne.adresse }}
+                                    </small>
+
+                                    <small class="text-muted d-block" *ngIf="personne.telephone">
+                                        <i class="fas fa-phone me-2"></i>
+                                        <strong>Téléphone:</strong> {{ personne.telephone }}
+                                    </small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

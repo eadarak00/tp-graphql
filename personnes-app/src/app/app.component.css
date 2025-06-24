@@ -1,0 +1,14 @@
+.navbar-brand {
+  font-weight: bold;
+  font-size: 1.25rem;
+}
+
+.nav-link.active {
+  background-color: rgba(255, 255, 255, 0.1);
+  border-radius: 5px;
+}
+
+main {
+  min-height: calc(100vh - 56px);
+  background-color: #f8f9fa;
+}

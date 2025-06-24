@@ -1,4 +1,4 @@
-package sn.uasz.m1Info.repository;
+package sn.uasz.m1Info.tp_graphql.repository;
 
 import java.util.List;
 

@@ -1,0 +1,37 @@
+scalar Date
+
+type Personne {
+  id: ID!
+  nom: String!
+  prenom: String!
+  dateNaissance: Date!
+  adresse: String!
+  telephone: String!
+}
+
+type PersonneSummary {
+  nom: String!
+  prenom: String!
+  telephone: String!
+  adresse: String!
+}
+
+type Query {
+  listerToutesPersonnes: [PersonneSummary!]!
+  rechercherPersonneParId(id: ID!): Personne
+  rechercherPersonnes(nom: String!): [Personne!]!
+}
+
+input PersonneInput {
+  nom: String!
+  prenom: String!
+  dateNaissance: Date!
+  adresse: String!
+  telephone: String!
+}
+
+type Mutation {
+  ajouterPersonne(personne: PersonneInput!): Personne!
+  modifierPersonne(id: ID!, personne: PersonneInput!): Personne!
+  supprimerPersonne(id: ID!): Boolean!
+}

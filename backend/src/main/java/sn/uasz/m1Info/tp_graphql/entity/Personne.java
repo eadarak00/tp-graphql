@@ -1,13 +1,14 @@
 package sn.uasz.m1Info.tp_graphql.entity;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-import jakarta.persistence.Column;
+import org.springframework.format.annotation.DateTimeFormat;
+
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Past;
 import jakarta.validation.constraints.Pattern;
@@ -34,6 +35,7 @@ public class Personne {
     private String prenom;
 
     @Past(message = "La date de naissance doit être dans le passé")
+    @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
     private LocalDate dateNaissance;
 
     @NotBlank

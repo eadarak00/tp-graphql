@@ -1,4 +1,4 @@
-package sn.uasz.m1Info.service;
+package sn.uasz.m1Info.tp_graphql.service;
 
 import java.util.List;
 import java.util.Optional;
@@ -6,8 +6,8 @@ import java.util.Optional;
 import org.springframework.stereotype.Service;
 
 import lombok.RequiredArgsConstructor;
-import sn.uasz.m1Info.repository.PersonneRepository;
 import sn.uasz.m1Info.tp_graphql.entity.Personne;
+import sn.uasz.m1Info.tp_graphql.repository.PersonneRepository;
 
 @Service
 @RequiredArgsConstructor
